@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HUDHACK 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <link rel="icon" type="image/png" href="Logo1.png">
+
+  <meta property="og:title" content="HUDHACK 2026">
+  <meta property="og:description" content="Cyber Security Hackathon. Build. Break. Secure. Feb 26 @ University of Huddersfield.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://your-website-url.com">
+  <meta property="og:image" content="https://your-website-url.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://your-website-url.com/og-image.png">
+  <meta name="theme-color" content="#41c2d5">
+
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* DEFAULT (DARK MODE) PALETTE */
+      --bg-color: #0f172a;
+      --panel-bg: #1e293b;
+      --grid-line: #334155;
+      --hud-teal: #41c2d5;
+      --hud-teal-dim: rgba(65, 194, 213, 0.1);
+      --hud-purple: #c084fc;
+      --hud-white: #f1f5f9;
+      --text-dim: #94a3b8;
+      --scanline-opacity: 1;
+      --switch-bg: #0f172a;
+    }
+
+    /* LIGHT MODE OVERRIDES */
+    body.light-mode {
+      --bg-color: #f1f5f9;        
+      --panel-bg: #ffffff;        
+      --grid-line: #cbd5e1;       
+      --hud-white: #0f172a;       
+      --text-dim: #475569;        
+      --hud-teal-dim: rgba(65, 194, 213, 0.2);
+      --scanline-opacity: 0.3;    
+      --switch-bg: #e2e8f0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+
+    ::selection { background: var(--hud-teal); color: var(--bg-color); }
+
+    body {
+      margin: 0;
+      font-family: 'JetBrains Mono', monospace;
+      background-color: var(--bg-color);
+      color: var(--hud-white);
+      overflow-x: hidden;
+      line-height: 1.5;
+      
+      /* Grid Background */
+      background-image: 
+        linear-gradient(rgba(120, 120, 120, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120, 120, 120, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* --- THEME SWITCH --- */
+    .theme-switch-wrapper {
+      position: fixed;
+      top: 3.5rem; 
+      right: 2rem;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel-bg);
+      padding: 5px 10px;
+      border: 1px solid var(--grid-line);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .switch-label { font-size: 0.75rem; font-weight: bold; color: var(--hud-teal); text-transform: uppercase; }
+    .theme-switch { display: inline-block; height: 24px; position: relative; width: 48px; }
+    .theme-switch input { display: none; }
+    .slider { background-color: var(--bg-color); border: 1px solid var(--hud-teal); bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; }
+    .slider:before { background-color: var(--text-dim); bottom: 3px; content: ""; height: 16px; left: 4px; position: absolute; transition: .4s; width: 16px; }
+    input:checked + .slider { background-color: var(--hud-teal); }
+    input:checked + .slider:before { transform: translateX(22px); background-color: var(--bg-color); }
+
+    /* --- CRT SCANLINE & MARQUEE --- */
+    .scanline {
+      width: 100%; height: 100vh; position: fixed; left: 0; top: 0; pointer-events: none; z-index: 900;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      background-size: 100% 2px, 3px 100%;
+      opacity: var(--scanline-opacity);
+    }
+    .marquee-container {
+      background: var(--hud-teal); color: var(--bg-color); padding: 0.8rem 0; overflow: hidden; white-space: nowrap;
+      position: fixed; top: 0; width: 100%; z-index: 1000; font-weight: 800; font-size: 0.9rem;
+    }
+    .marquee-content { display: inline-block; animation: marquee 40s linear infinite; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* --- HERO --- */
+    header {
+      min-height: 95vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+      padding: 6rem 2rem 4rem; border-bottom: 2px solid var(--grid-line); position: relative;
+    }
+    .system-status { border: 1px solid var(--hud-teal); color: var(--hud-teal); padding: 0.5rem 1rem; margin-bottom: 2rem; font-size: 0.8rem; letter-spacing: 2px; background: var(--hud-teal-dim); }
+    
+    h1 { 
+      font-size: clamp(4rem, 15vw, 10rem); 
+      margin: 0; line-height: 0.8; font-weight: 800; text-transform: uppercase; letter-spacing: -5px; color: var(--hud-white); 
+    }
+    h1 span { color: transparent; -webkit-text-stroke: 2px var(--hud-teal); display: block; }
+    
+    .hero-data { display: flex; gap: 2rem; margin-top: 3rem; font-size: 1rem; color: var(--hud-teal); border-top: 1px solid var(--grid-line); border-bottom: 1px solid var(--grid-line); padding: 1rem 0; width: 100%; justify-content: center; background: var(--panel-bg); }
+    .countdown-bar { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; max-width: 1000px; border: 2px solid var(--grid-line); margin: 3rem 0; background: var(--bg-color); }
+    .count-segment { padding: 1.5rem; border-right: 2px solid var(--grid-line); display: flex; flex-direction: column; align-items: center; }
+    .count-segment:last-child { border-right: none; }
+    .count-val { font-size: 2.5rem; font-weight: 800; color: var(--hud-teal); }
+    .count-lbl { font-size: 0.8rem; opacity: 0.7; color: var(--hud-white); }
+    .cta-container { display: flex; gap: 0; width: 100%; max-width: 600px; border: 2px solid var(--hud-white); }
+    
+    .btn-brutal { flex: 2; padding: 1.5rem; background: var(--hud-white); color: var(--bg-color); text-decoration: none; text-transform: uppercase; font-weight: 800; font-size: 1.1rem; transition: 0.2s; text-align: center; }
+    .btn-brutal:hover { background: var(--hud-teal); color: var(--bg-color); }
+    .btn-secondary { flex: 1; background: var(--bg-color); color: var(--hud-white); border-left: 2px solid var(--hud-white); display: flex; align-items: center; justify-content: center; }
+    .btn-secondary:hover { background: var(--grid-line); color: var(--hud-teal); }
+
+    /* --- ANIMATED SCROLL INDICATOR --- */
+    .scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; cursor: pointer; opacity: 0.7; transition: 0.3s; }
+    .scroll-indicator:hover { opacity: 1; transform: translateY(5px); }
+    .scroll-arrow { width: 20px; height: 20px; border-right: 3px solid var(--hud-teal); border-bottom: 3px solid var(--hud-teal); transform: rotate(45deg); margin: -5px; animation: scroll-pulse 2s infinite; box-shadow: 2px 2px 5px rgba(65, 194, 213, 0.2); }
+    .scroll-arrow:nth-child(1) { animation-delay: 0s; }
+    .scroll-arrow:nth-child(2) { animation-delay: 0.15s; }
+    .scroll-arrow:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes scroll-pulse { 0% { opacity: 0; transform: rotate(45deg) translate(-5px, -5px); } 50% { opacity: 1; } 100% { opacity: 0; transform: rotate(45deg) translate(5px, 5px); } }
+
+    /* =========================================
+       LAYOUT STYLE
+       ========================================= */
+    .modules-container { max-width: 1600px; width: 95%; margin: 0 auto; padding: 4rem 0; display: flex; flex-direction: column; gap: 1.5rem; }
+    .featured-panel { width: 100%; }
+    .featured-body { padding: 2.5rem; display: flex; gap: 4rem; align-items: center; }
+    .featured-text { flex: 1; }
+    .featured-grid-wrap { flex: 1; width: 100%; }
+    .grid-row { display: flex; gap: 1.5rem; align-items: flex-start; width: 100%; }
+    .module-col { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .panel { background: var(--bg-color); border: 2px solid var(--grid-line); position: relative; transition: 0.3s; overflow: hidden; display: flex; flex-direction: column; }
+    .panel:hover { border-color: var(--hud-teal); box-shadow: 0 0 30px var(--hud-teal-dim); }
+    .p-head { background: var(--grid-line); color: var(--hud-teal); padding: 0.6rem 1rem; font-size: 0.85rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--bg-color); }
+    .p-controls { display: flex; gap: 6px; }
+    .dot { width: 8px; height: 8px; background: #475569; border-radius: 50%; }
+    .panel:hover .dot { background: var(--hud-teal); }
+    .p-body { padding: 2rem; flex: 1; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--grid-line); }
+    .featured-body .info-grid { border-top: none; padding-top: 0; }
+    .info-item { display: flex; flex-direction: column; }
+    .info-label { color: var(--hud-teal); font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; opacity: 0.8; }
+    .info-val { color: var(--hud-white); font-size: 1rem; font-weight: bold; }
+    .redacted { background: var(--hud-teal); color: var(--bg-color); padding: 2px 6px; font-weight: 800; cursor: help; }
+
+    .mode-card { background: rgba(125, 125, 125, 0.05); border: 1px solid var(--grid-line); padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: 0.2s; margin-bottom: 1rem; }
+    .mode-card:last-child { margin-bottom: 0; }
+    .mode-card:hover { border-color: var(--hud-teal); background: var(--hud-teal-dim); }
+    .mode-icon { font-size: 2rem; }
+    .mode-info h3 { margin: 0; color: var(--hud-teal); font-size: 1rem; text-transform: uppercase; }
+    .mode-info p { margin: 0.5rem 0 0; color: var(--text-dim); font-size: 0.8rem; line-height: 1.4; }
+
+    .map-wrap { position: relative; height: 300px; }
+    iframe { width: 100%; height: 100%; border: none; filter: grayscale(100%) invert(90%) hue-rotate(180deg) contrast(1.2); }
+    .reticle { position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; border: 1px solid rgba(65, 194, 213, 0.3); pointer-events: none; }
+    .target-tag { position: absolute; bottom: 20px; left: 20px; background: black; color: var(--hud-teal); padding: 4px 8px; border: 1px solid var(--hud-teal); font-size: 0.7rem; font-weight: bold; }
+
+    .discord-panel { border-color: var(--hud-purple) !important; }
+    .discord-panel .p-head { color: var(--hud-purple); }
+    .discord-btn { display: block; width: 100%; padding: 1rem; margin-top: 1rem; background: var(--hud-purple); color: black; font-weight: 800; text-transform: uppercase; text-align: center; text-decoration: none; transition: 0.2s; }
+    .discord-btn:hover { background: white; box-shadow: 0 0 15px var(--hud-purple); }
+
+    /* SPONSOR GRID STYLES (REVERSED TO 3 COLUMNS) */
+    .sponsor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 Columns to fill horizontal space better */
+      gap: 10px;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--grid-line);
+    }
+    .sponsor-slot {
+      aspect-ratio: 3/2;
+      border: 1px dashed var(--grid-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      background: rgba(0,0,0,0.2);
+      transition: 0.3s;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .sponsor-slot:hover {
+      border-color: var(--hud-teal);
+      color: var(--hud-teal);
+      box-shadow: 0 0 10px var(--hud-teal-dim);
+    }
+
+    .faq-item { border: 1px solid var(--grid-line); margin-bottom: 10px; background: rgba(125,125,125,0.05); transition: all 0.2s ease; }
+    .faq-item:hover { border-color: rgba(65, 194, 213, 0.5); }
+    .faq-item[open] { border-color: var(--hud-teal); background: var(--hud-teal-dim); }
+    summary { padding: 1rem; cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    summary::after { content: "+"; color: var(--hud-teal); font-size: 1.2rem; }
+    details[open] summary::after { content: "-"; }
+    .faq-ans { padding: 0 1rem 1rem; color: var(--text-dim); font-size: 0.9rem; border-top: 1px dashed var(--grid-line); margin-top: 0.5rem; padding-top: 1rem; animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+    footer { padding: 5rem 2rem; text-align: center; border-top: 5px solid var(--hud-teal); background: var(--panel-bg); }
+    .ascii-tower { font-size: 12px; line-height: 12px; white-space: pre; color: var(--grid-line); margin-bottom: 2rem; }
+    
+    /* UPDATED FOOTER LINKS WITH ICONS */
+    .footer-socials { display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .footer-link { 
+      color: var(--hud-white); 
+      text-decoration: none; 
+      font-size: 0.9rem; 
+      border: 1px solid transparent; 
+      padding: 0.5rem 1rem; 
+      transition: 0.2s; 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem;
+    }
+    .footer-link:hover { border-color: var(--hud-teal); color: var(--hud-teal); background: var(--hud-teal-dim); }
+    .footer-link svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* --- SECRET MODAL --- */
+    .secret-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+    .secret-content { border: 2px solid var(--hud-teal); background: #000; padding: 3rem; text-align: center; box-shadow: 0 0 50px var(--hud-teal); animation: modalPop 0.3s ease-out; max-width: 90%; }
+    @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .secret-title { font-size: 2rem; color: var(--hud-teal); margin-bottom: 1rem; font-weight: 800; letter-spacing: 2px; }
+    .secret-text { color: var(--text-dim); margin-bottom: 2rem; }
+    .flag-box { background: #111; color: #fff; padding: 1rem 2rem; font-size: 1.5rem; border: 1px dashed var(--hud-teal); font-family: monospace; letter-spacing: 2px; margin-bottom: 2rem; }
+    .close-secret { background: var(--hud-teal); color: #000; padding: 0.8rem 2rem; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; }
+    .close-secret:hover { background: #fff; }
+
+    /* /// CHALLENGE 3: THE GHOST ELEMENT /// */
+    .ghost-flag { opacity: 0.02; pointer-events: none; position: absolute; bottom: 10px; left: 10px; color: var(--hud-teal); font-size: 8px; }
+    .panel:hover .ghost-flag { opacity: 0; /* Hides when you look too close */ }
+
+    /* --- BACK TO TOP BUTTON --- */
+    #backToTop {
+      position: fixed;
+      bottom: 20px;
+      left: 20px; /* Bottom Left to not conflict with Theme Switch */
+      background: var(--hud-teal);
+      color: var(--bg-color);
+      border: none;
+      padding: 10px 15px;
+      font-weight: bold;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s;
+      z-index: 1000;
+    }
+    #backToTop.visible { opacity: 1; pointer-events: all; }
+
+    /* --- MOBILE RESPONSIVE TWEAKS --- */
+    @media (max-width: 900px) {
+      .featured-body { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
+      .grid-row { flex-direction: column; }
+      .hero-data { flex-direction: column; gap: 1rem; align-items: center; }
+      
+      /* Switch to 2x2 grid for countdown on mobile */
+      .countdown-bar { grid-template-columns: 1fr 1fr; }
+      .count-segment:nth-child(2) { border-right: none; } /* Remove border for 2nd item in 2x2 grid */
+      .count-segment { border-bottom: 2px solid var(--grid-line); }
+      .count-segment:nth-last-child(-n+2) { border-bottom: none; } /* Remove bottom border for last row */
+
+      /* Stack buttons */
+      .cta-container { flex-direction: column; gap: 1rem; }
+      .btn-secondary { border-left: none; border-top: 2px solid var(--hud-white); }
+      
+      .info-grid { grid-template-columns: 1fr; gap: 1rem; }
+      
+      /* Move theme switch to bottom right on mobile for easier reach (FAB style) */
+      .theme-switch-wrapper {
+        top: auto;
+        bottom: 20px;
+        right: 20px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        border-color: var(--hud-teal);
+      }
+      
+      /* Adjust header padding so title doesn't hit the marquee */
+      header { padding-top: 5rem; }
+      h1 { font-size: 18vw; } /* Ensure huge text fits screen width */
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .scanline, .marquee-container { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="secretModal" class="secret-modal">
+    <div class="secret-content">
+      <div class="secret-title">/// SYSTEM OVERRIDE ///</div>
+      <p class="secret-text">KONAMI SEQUENCE RECOGNIZED. ACCESS GRANTED.</p>
+      <div class="flag-box">HUDHACK{R3TR0_G4M3R_1986}</div>
+      <p style="color:var(--hud-teal); font-size: 0.9rem; margin-bottom: 1rem;">
+        Proof of Concept found. Submit this flag to claim the bounty.
+      </p>
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <a href="#" target="_blank" class="btn-brutal" style="padding:0.5rem 1rem; font-size:0.9rem; background:var(--hud-teal); color:var(--bg-color); border:none;">SUBMIT FLAG</a>
+        <button class="close-secret" onclick="document.getElementById('secretModal').style.display='none'">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-switch-wrapper">
+    <span class="switch-label">LIGHT MODE</span>
+    <label class="theme-switch" for="checkbox">
+      <input type="checkbox" id="checkbox" onchange="toggleTheme(this.checked)" />
+      <div class="slider"></div>
+    </label>
+  </div>
+
+  <div class="scanline"></div>
+  <div class="marquee-container">
+    <div class="marquee-content">
+      /// QUEENSGATE CAMPUS /// HUDHACK 2026 /// BUILD. BREAK. SECURE. /// REGISTRATION OPEN /// PRIZES FOR TOP TEAMS /// JOIN DISCORD 
+      /// QUEENSGATE CAMPUS /// HUDHACK 2026 /// BUILD. BREAK. SECURE. /// REGISTRATION OPEN /// PRIZES FOR TOP TEAMS /// JOIN DISCORD 
+      /// QUEENSGATE CAMPUS /// HUDHACK 2026 /// BUILD. BREAK. SECURE. /// REGISTRATION OPEN /// PRIZES FOR TOP TEAMS /// JOIN DISCORD 
+      /// QUEENSGATE CAMPUS /// HUDHACK 2026 /// BUILD. BREAK. SECURE. /// REGISTRATION OPEN /// PRIZES FOR TOP TEAMS /// JOIN DISCORD ///
+    </div>
+  </div>
+
+  <header>
+    <div class="system-status">:: ORGANISED BY THE CYBER SECURITY SOCIETY ::</div>
+    <h1>HUD<br><span>HACK</span></h1>
+    <div class="hero-data">
+      <span>LOC: HASLETT (HA4/04)</span>
+      <span>//</span>
+      <span>DATE: 26.02.26</span>
+      <span>//</span>
+      <span>STATUS: BOOKING REQUIRED</span>
+    </div>
+    <div class="countdown-bar">
+      <div class="count-segment"><span id="days" class="count-val">00</span><span class="count-lbl">DAYS</span></div>
+      <div class="count-segment"><span id="hours" class="count-val">00</span><span class="count-lbl">HRS</span></div>
+      <div class="count-segment"><span id="minutes" class="count-val">00</span><span class="count-lbl">MIN</span></div>
+      <div class="count-segment"><span id="seconds" class="count-val">00</span><span class="count-lbl">SEC</span></div>
+    </div>
+    <div class="cta-container">
+      <a href="https://forms.gle/gZ5BYTa1a2xF7UcJ9" class="btn-brutal">Sign Up Here</a>
+      
+      <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=HUDHACK+2026&dates=20260226T100000/20260226T180000&details=Cyber+Security+Hackathon.+Build.+Break.+Secure.&location=Haslett+Building+(HA4/04),+University+of+Huddersfield&ctz=Europe/London" target="_blank" class="btn-brutal btn-secondary">Sync Cal</a>
+    </div>
+    
+    <div class="scroll-indicator" onclick="document.getElementById('main-content').scrollIntoView({behavior: 'smooth'})">
+      <div class="scroll-arrow"></div>
+      <div class="scroll-arrow"></div>
+      <div class="scroll-arrow"></div>
+    </div>
+  </header>
+
+  <div class="modules-container" id="main-content">
+
+    <div class="panel featured-panel">
+      <div class="p-head">
+        <span>01 // About the Event</span>
+        <div class="p-controls"><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="p-body featured-body">
+        <div class="featured-text">
+          <p style="margin-top:0; font-weight:700; color:var(--hud-teal); font-size:1.1rem; margin-bottom:1rem;">EVENT OVERVIEW</p>
+          <p style="color:var(--text-dim); line-height: 1.6;">
+            <strong>HudHack</strong> is the inaugural hackathon organised by the University of Huddersfield Cyber Security Society. 
+            <br><br>
+            Beyond the competition, the event will feature industry talks and potential workshops throughout the day.
+            <br><br>
+            The event brings together students to compete in two parallel tracks: a Product Build challenge and a Capture The Flag (CTF) security arena. 
+            <br><br>
+            Open to all skill levels, HudHack provides a collaborative environment for developers, ethical hackers, and creatives to innovate, problem-solve, and secure the top prizes.
+          </p>
+        </div>
+        <div class="featured-grid-wrap">
+          <div class="info-grid">
+            <div class="info-item"><span class="info-label">DATE</span><span class="info-val">26 FEB 2026</span></div>
+            <div class="info-item"><span class="info-label">TIME</span><span class="info-val">10:00 - 18:00</span></div>
+            <div class="info-item"><span class="info-label">THEME</span><span class="info-val"><span class="redacted">[CLASSIFIED]</span></span></div>
+            <div class="info-item"><span class="info-label">ADMISSION</span><span class="info-val">Free / Booking Req.</span></div>
+          </div>
+        </div>
+        <div class="ghost-flag">HUDHACK{INSPECT_EL3M3NT_G0D}</div>
+      </div>
+    </div>
+
+    <div class="grid-row">
+      <div class="module-col">
+        <div class="panel">
+          <div class="p-head">
+            <span>02 // Competition Tracks</span>
+            <div class="p-controls"><div class="dot"></div><div class="dot"></div></div>
+          </div>
+          <div class="p-body">
+            
+            <div class="mode-card">
+              <div class="mode-icon">🛠️</div>
+              <div class="mode-info">
+                <h3 style="color:var(--hud-white);">The Product Build</h3>
+                <p>Teams work together to design and code a piece of software (like an App or Website) based on a specific theme given at the start of the day.</p>
+              </div>
+            </div>
+
+            <div class="mode-card">
+              <div class="mode-icon">🚩</div>
+              <div class="mode-info">
+                <h3 style="color:var(--hud-teal);">The Security CTF</h3>
+                <p>
+                  Solve a series of CTF challenges across various categories. Topics include <strong>Cryptography, Forensics, OSINT, Web Exploitation</strong>, and more. Find the "flags" to score points.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="p-head">
+            <span>03 // Event Schedule</span>
+            <div class="p-controls"><div class="dot"></div><div class="dot"></div></div>
+          </div>
+          <div class="p-body" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 200px;">
+            <h3 style="color: var(--hud-teal); margin-bottom: 0.5rem; text-transform: uppercase;">Coming Soon</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 80%;">
+              The official timeline for the day is currently being <strong>finalised</strong>. 
+              <br><br>
+              Get ready for a packed schedule featuring coding challenges, industry talks, workshops, and plenty of <strong>food</strong> to keep you fueled.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel discord-panel">
+          <div class="p-head"><span>05 // Community</span><div class="p-controls"><div class="dot" style="background:var(--hud-purple)"></div></div></div>
+          <div class="p-body" style="text-align: center;">
+            <p style="color:var(--text-dim); margin-bottom:1.5rem; font-size:0.9rem;">Need a team? Have questions? Want CTF hints? Join our community server.</p>
+            <a href="https://discord.gg/MpJk8bGSRV" class="discord-btn">>> JOIN DISCORD SERVER <<</a>
+          </div>
+        </div>
+
+        <div class="panel" style="border-color: var(--hud-teal);">
+          <div class="p-head"><span>08 // Partner with Us</span><div class="p-controls"><div class="dot" style="background: var(--hud-teal);"></div></div></div>
+          <div class="p-body">
+            <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:1.5rem;">Interested in supporting student innovation? We are looking for partners to provide prizes, food, or mentorship.</p>
+            <a href="mailto:hudcybersoc@gmail.com" class="btn-brutal" style="display:block; text-align:center; padding:1rem; font-size:0.9rem; background:transparent; border: 1px solid var(--hud-teal); color:var(--hud-teal);">Become a Sponsor</a>
+            
+            <div class="sponsor-grid">
+              <div class="sponsor-slot">Available</div>
+              <div class="sponsor-slot">Available</div>
+              <div class="sponsor-slot">Available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="module-col">
+        <div class="panel" style="padding:0;">
+          <div class="p-head"><span>04 // Location</span><div class="p-controls"><div class="dot"></div><div class="dot"></div></div></div>
+          <div class="map-wrap">
+            <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=-1.78069%2C53.63965%2C-1.77469%2C53.64365&layer=mapnik&marker=53.641659%2C-1.777690"></iframe>
+            <div class="reticle"></div>
+            <div class="target-tag">TARGET: HASLETT BLDG (HA4/04)</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="p-head"><span>07 // Prizes & Awards</span><div class="p-controls"><div class="dot"></div></div></div>
+          <div class="p-body" style="text-align: center; padding: 3rem 1rem;">
+            <div style="background: rgba(45, 212, 191, 0.1); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; border: 1px solid var(--hud-teal);"><span style="font-size: 1.5rem;">🏆</span></div>
+            <h3 style="color: var(--hud-white); margin: 0 0 0.5rem 0; text-transform: uppercase; font-size: 1.1rem;">To Be Announced</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 300px; margin: 0 auto;">The official prize pool is currently being <strong>finalised</strong>. Check back soon for the full list of rewards.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="p-head"><span>06 // FAQ</span><div class="p-controls"><div class="dot"></div></div></div>
+          <div class="p-body">
+            <details class="faq-item"><summary>Do I need cyber security experience?</summary><div class="faq-ans">No. The event is open to all backgrounds. We have beginner-friendly challenges and mentors on standby.</div></details>
+            <details class="faq-item"><summary>Can I start coding beforehand?</summary><div class="faq-ans">No. All project code must be created during the event timeframe. Brainstorming and wireframing beforehand is permitted.</div></details>
+            
+            <details class="faq-item">
+              <summary>What equipment do I need?</summary>
+              <div class="faq-ans">Please bring your own laptop and charger. Power strips and Wi-Fi will be provided at the venue.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>What if I don't have a team?</summary>
+              <div class="faq-ans">Don't worry! We can help you find a team on our Discord server beforehand, or we will help you find teammates on the day of the event.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>How do teams work?</summary>
+              <div class="faq-ans">Teams can have between 1 and 6 members. You can also hack solo if you prefer the "lone wolf" approach.</div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Can non-Huddersfield students attend?</summary>
+              <div class="faq-ans">No. This event is exclusive to students currently enrolled at the University of Huddersfield. You will need your student ID for entry.</div>
+            </details>
+
+            <details class="faq-item"><summary>Is food provided?</summary><div class="faq-ans">Yes. Food and refreshments will be provided for all attendees. Specific details on the menu and timing will be confirmed closer to the date. We will accommodate dietary requirements where possible.</div></details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑ TOP</button>
+
+    <div class="footer-socials">
+      <a href="mailto:hudcybersoc@gmail.com" class="footer-link">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        EMAIL HQ
+      </a>
+      <a href="https://www.instagram.com/hudcybersoc/" class="footer-link">
+        <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+        INSTAGRAM
+      </a>
+      <a href="https://www.linkedin.com/company/huddscybersoc/" class="footer-link">
+        <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+        LINKEDIN
+      </a>
+      <a href="https://github.com/Shaharyar01" class="footer-link">
+        <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5c.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34c-.46-1.16-1.11-1.47-1.11-1.47c-.91-.62.07-.6.07-.6c1 .07 1.53 1.03 1.53 1.03c.87 1.52 2.34 1.07 2.91.83c.09-.65.35-1.09.63-1.34c-2.22-.25-4.55-1.11-4.55-4.92c0-1.11.38-2 1.03-2.71c-.1-.25-.45-1.29.1-2.64c0 0 .84-.27 2.75 1.02c.79-.22 1.65-.33 2.5-.33c.85 0 1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02c.55 1.35.2 2.39.1 2.64c.65.71 1.03 1.6 1.03 2.71c0 3.82-2.34 4.66-4.57 4.91c.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+        GITHUB
+      </a>
+    </div>
+    
+    <p> 2026 UNIVERSITY OF HUDDERSFIELD CYBER SECURITY SOCIETY</p>
+    <div style="margin-top: 1.5rem; font-size: 0.8rem; opacity: 0.6;">
+      <a href="#" style="color: var(--hud-white); text-decoration: none; margin: 0 10px;">CODE OF CONDUCT</a>
+      <span style="color:var(--grid-line)">|</span>
+      <a href="#" style="color: var(--hud-white); text-decoration: none; margin: 0 10px;">PRIVACY POLICY</a>
+    </div>
+  </footer>
+
+  <script>
+    /* THEME TOGGLE LOGIC */
+    function toggleTheme(isChecked) {
+      const body = document.body;
+      if (isChecked) {
+        body.classList.add('light-mode');
+        localStorage.setItem('theme', 'light');
+      } else {
+        body.classList.remove('light-mode');
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    /* LOAD SAVED THEME */
+    const savedTheme = localStorage.getItem('theme');
+    const checkbox = document.getElementById('checkbox');
+    if (savedTheme === 'light') { document.body.classList.add('light-mode'); checkbox.checked = true; }
+
+    /* EASTER EGG LOGIC (KONAMI) */
+    const secretCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let currentSequence = [];
+    document.addEventListener('keydown', (e) => {
+      currentSequence.push(e.key);
+      currentSequence = currentSequence.slice(-secretCode.length);
+      if (JSON.stringify(currentSequence) === JSON.stringify(secretCode)) {
+        document.getElementById('secretModal').style.display = 'flex';
+        console.log("%cSYSTEM OVERRIDE DETECTED: ACCESS GRANTED", "color: #2dd4bf; font-weight: bold; font-size: 16px;");
+      }
+    });
+
+    /* CHALLENGE 2: SETTING THE COOKIE FLAG (The Cookie Monster) */
+    document.cookie = "hudhack_token=HUDHACK{C00K13_M0NST3R}; path=/";
+
+    /* CHALLENGE 4: THE CONSOLE LOG (The Console Cowboy) */
+    /* Decodes to: HUDHACK{B4S364_D3C0D3R} */
+    const msg = "U3lzdGVtIERpYWdub3N0aWM6IERhdGEgQ29ycnVwdGlvbi4gUmVjb3ZlcmVkIEZyYWdtZW50OiBIVURIQUNLe0I0UzM2NF9EM0MwRDNSfQ==";
+    console.log("%c⚠️ SYSTEM WARNING ⚠️", "color: red; font-weight: bold; font-size: 20px;");
+    console.log("Error 0x5F: Unknown string detected in memory buffer.");
+    console.log("Raw Data: " + msg);
+    console.log("Hint: Use a Base64 decoder to analyse the raw data.");
+
+    /* COUNTDOWN TIMER: UPDATED TO 10 AM */
+    const eventTime = new Date("2026-02-26T10:00:00").getTime();
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = eventTime - now;
+      if (diff <= 0) return;
+      document.getElementById("days").innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, "0");
+      document.getElementById("hours").innerText = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, "0");
+      document.getElementById("minutes").innerText = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+      document.getElementById("seconds").innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    /* BACK TO TOP BUTTON LOGIC */
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('backToTop');
+      if (window.scrollY > 300) btn.classList.add('visible');
+      else btn.classList.remove('visible');
+    });
+  </script>
+</body>
+</html>
