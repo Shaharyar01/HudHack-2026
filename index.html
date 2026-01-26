@@ -3,54 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <title>HUDHACK 2026</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   
-  <link rel="icon" type="image/png" href="Logo1.png">
+  <link rel="icon" type="image/png" href="hudhack-logo-solid-bg.png" />
 
   <meta property="og:title" content="HUDHACK 2026">
   <meta property="og:description" content="Cyber Security Hackathon. Build. Break. Secure. Feb 26 @ University of Huddersfield.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://your-website-url.com">
   <meta property="og:image" content="https://your-website-url.com/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://your-website-url.com/og-image.png">
-  <meta name="theme-color" content="#41c2d5">
+  <meta name="theme-color" content="#0f172a">
 
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
   
   <style>
+    /* =========================================
+       1. VARIABLES
+       ========================================= */
     :root {
-      /* DEFAULT (DARK MODE) PALETTE */
-      --bg-color: #0f172a;
-      --panel-bg: #1e293b;
-      --grid-line: #334155;
-      --hud-teal: #41c2d5;
-      --hud-teal-dim: rgba(65, 194, 213, 0.1);
-      --hud-purple: #c084fc;
-      --hud-white: #f1f5f9;
-      --text-dim: #94a3b8;
-      --scanline-opacity: 1;
-      --switch-bg: #0f172a;
+      --bg-color: #0f172a;       
+      --panel-bg: #1e293b;       
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --grid-line: #334155;      
+      --hud-teal: #41c2d5;       
+      --hud-teal-dim: rgba(65, 194, 213, 0.15);
+      --hud-purple: #c084fc;     
+      --hud-white: #f1f5f9;      
+      --text-dim: #94a3b8;       
+      --radius: 12px;
     }
 
-    /* LIGHT MODE OVERRIDES */
     body.light-mode {
-      --bg-color: #f1f5f9;        
-      --panel-bg: #ffffff;        
-      --grid-line: #cbd5e1;       
+      --bg-color: #f8fafc;        
+      --panel-bg: #ffffff;
+      --card-bg: #ffffff;        
+      --grid-line: #e2e8f0;       
       --hud-white: #0f172a;       
-      --text-dim: #475569;        
-      --hud-teal-dim: rgba(65, 194, 213, 0.2);
-      --scanline-opacity: 0.3;    
-      --switch-bg: #e2e8f0;
+      --text-dim: #64748b;        
+      --hud-teal-dim: rgba(65, 194, 213, 0.1);
     }
 
+    /* =========================================
+       2. BASE STYLES
+       ========================================= */
     html { scroll-behavior: smooth; }
-
-    * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
-
+    
+    * { 
+      box-sizing: border-box; 
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease; 
+      -webkit-tap-highlight-color: transparent;
+    }
+    
     ::selection { background: var(--hud-teal); color: var(--bg-color); }
 
     body {
@@ -59,260 +62,256 @@
       background-color: var(--bg-color);
       color: var(--hud-white);
       overflow-x: hidden;
-      line-height: 1.5;
-      
-      /* Grid Background */
-      background-image: 
-        linear-gradient(rgba(120, 120, 120, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(120, 120, 120, 0.05) 1px, transparent 1px);
-      background-size: 40px 40px;
+      line-height: 1.6;
+      background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
+      background-size: 30px 30px;
     }
 
-    /* --- THEME SWITCH --- */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    /* =========================================
+       3. UI COMPONENTS
+       ========================================= */
+    
+    /* Theme Switcher */
     .theme-switch-wrapper {
-      position: fixed;
-      top: 3.5rem; 
-      right: 2rem;
-      z-index: 1100;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--panel-bg);
-      padding: 5px 10px;
-      border: 1px solid var(--grid-line);
-      border-radius: 4px;
-      transition: all 0.3s ease;
+      position: fixed; top: 3.5rem; right: 20px; z-index: 2000;
+      display: flex; align-items: center; gap: 12px;
+      background: var(--panel-bg); padding: 8px 16px;
+      border: 1px solid var(--grid-line); border-radius: 50px; 
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
     }
-    .switch-label { font-size: 0.75rem; font-weight: bold; color: var(--hud-teal); text-transform: uppercase; }
-    .theme-switch { display: inline-block; height: 24px; position: relative; width: 48px; }
+    .switch-label { font-size: 0.75rem; font-weight: 800; color: var(--hud-teal); text-transform: uppercase; letter-spacing: 1px; }
+    .theme-switch { position: relative; display: inline-block; width: 48px; height: 24px; }
     .theme-switch input { display: none; }
-    .slider { background-color: var(--bg-color); border: 1px solid var(--hud-teal); bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; }
-    .slider:before { background-color: var(--text-dim); bottom: 3px; content: ""; height: 16px; left: 4px; position: absolute; transition: .4s; width: 16px; }
-    input:checked + .slider { background-color: var(--hud-teal); }
-    input:checked + .slider:before { transform: translateX(22px); background-color: var(--bg-color); }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-color); border: 2px solid var(--grid-line); transition: .4s; border-radius: 34px; }
+    .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: var(--text-dim); transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--hud-teal); border-color: var(--hud-teal); }
+    input:checked + .slider:before { transform: translateX(24px); background-color: white; }
 
-    /* --- CRT SCANLINE & MARQUEE --- */
-    .scanline {
-      width: 100%; height: 100vh; position: fixed; left: 0; top: 0; pointer-events: none; z-index: 900;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-      background-size: 100% 2px, 3px 100%;
-      opacity: var(--scanline-opacity);
-    }
+    /* Marquee - UPDATED TO MATCH REFERENCE IMAGE (Black Text) */
     .marquee-container {
-      background: var(--hud-teal); color: var(--bg-color); padding: 0.8rem 0; overflow: hidden; white-space: nowrap;
-      position: fixed; top: 0; width: 100%; z-index: 1000; font-weight: 800; font-size: 0.9rem;
+      background: var(--hud-teal); 
+      color: #000000; /* Black text creates that high contrast cyber look */
+      padding: 0.6rem 0; overflow: hidden; white-space: nowrap;
+      position: fixed; top: 0; width: 100%; z-index: 1000; 
+      font-weight: 800; font-size: 0.85rem; letter-spacing: 1px;
     }
-    .marquee-content { display: inline-block; animation: marquee 40s linear infinite; }
+    .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 60s linear infinite; }
     @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-    /* --- HERO --- */
-    header {
-      min-height: 95vh;
-      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-      padding: 6rem 2rem 4rem; border-bottom: 2px solid var(--grid-line); position: relative;
+    /* Buttons */
+    .cta-container { display: flex; gap: 1.5rem; width: 100%; max-width: 600px; margin-top: 1rem; }
+    
+    .btn-brutal { 
+      flex: 1; padding: 1.2rem; background: var(--hud-teal); color: var(--bg-color); 
+      text-decoration: none; text-transform: uppercase; font-weight: 800; font-size: 1.1rem; 
+      border-radius: var(--radius); text-align: center; border: 2px solid var(--hud-teal);
+      white-space: nowrap; 
     }
-    .system-status { border: 1px solid var(--hud-teal); color: var(--hud-teal); padding: 0.5rem 1rem; margin-bottom: 2rem; font-size: 0.8rem; letter-spacing: 2px; background: var(--hud-teal-dim); }
+    .btn-brutal:hover { background: transparent; color: var(--hud-teal); transform: translateY(-4px); box-shadow: 0 10px 20px -5px rgba(65, 194, 213, 0.3); }
+    .btn-brutal:active { transform: scale(0.98); }
+    
+    .btn-secondary { 
+      flex: 1; padding: 1.2rem; background: transparent; color: var(--hud-white); 
+      border: 2px solid var(--grid-line); border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; text-transform: uppercase; font-weight: 800; font-size: 1.1rem;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover { border-color: var(--hud-white); background: rgba(255,255,255,0.05); transform: translateY(-4px); }
+    .btn-secondary:active { transform: scale(0.98); }
+
+    /* Back To Top */
+    #backToTop { 
+      position: fixed; bottom: 20px; left: 20px; background: var(--hud-teal); color: var(--bg-color); 
+      border: none; padding: 10px 15px; font-weight: bold; font-family: 'JetBrains Mono', monospace; 
+      cursor: pointer; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 1000; 
+      border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    #backToTop.visible { opacity: 1; pointer-events: all; }
+
+    /* =========================================
+       4. HERO SECTION
+       ========================================= */
+    header {
+      min-height: 100dvh; 
+      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+      padding: 8rem 2rem 4rem; position: relative;
+    }
+    .system-status { 
+      border: 1px solid var(--hud-teal); color: var(--hud-teal); padding: 0.5rem 1.5rem; 
+      margin-bottom: 2rem; font-size: 0.85rem; letter-spacing: 2px; 
+      background: var(--hud-teal-dim); border-radius: 50px; 
+    }
     
     h1 { 
-      font-size: clamp(4rem, 15vw, 10rem); 
-      margin: 0; line-height: 0.8; font-weight: 800; text-transform: uppercase; letter-spacing: -5px; color: var(--hud-white); 
+      font-size: clamp(3.5rem, 15vw, 10rem); margin: 0; line-height: 0.9; font-weight: 800; 
+      text-transform: uppercase; letter-spacing: -4px; color: var(--hud-white); 
     }
     h1 span { color: transparent; -webkit-text-stroke: 2px var(--hud-teal); display: block; }
     
-    .hero-data { display: flex; gap: 2rem; margin-top: 3rem; font-size: 1rem; color: var(--hud-teal); border-top: 1px solid var(--grid-line); border-bottom: 1px solid var(--grid-line); padding: 1rem 0; width: 100%; justify-content: center; background: var(--panel-bg); }
-    .countdown-bar { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; max-width: 1000px; border: 2px solid var(--grid-line); margin: 3rem 0; background: var(--bg-color); }
-    .count-segment { padding: 1.5rem; border-right: 2px solid var(--grid-line); display: flex; flex-direction: column; align-items: center; }
-    .count-segment:last-child { border-right: none; }
-    .count-val { font-size: 2.5rem; font-weight: 800; color: var(--hud-teal); }
-    .count-lbl { font-size: 0.8rem; opacity: 0.7; color: var(--hud-white); }
-    .cta-container { display: flex; gap: 0; width: 100%; max-width: 600px; border: 2px solid var(--hud-white); }
-    
-    .btn-brutal { flex: 2; padding: 1.5rem; background: var(--hud-white); color: var(--bg-color); text-decoration: none; text-transform: uppercase; font-weight: 800; font-size: 1.1rem; transition: 0.2s; text-align: center; }
-    .btn-brutal:hover { background: var(--hud-teal); color: var(--bg-color); }
-    .btn-secondary { flex: 1; background: var(--bg-color); color: var(--hud-white); border-left: 2px solid var(--hud-white); display: flex; align-items: center; justify-content: center; }
-    .btn-secondary:hover { background: var(--grid-line); color: var(--hud-teal); }
+    .hero-data { 
+      display: flex; gap: 2rem; margin-top: 3rem; font-size: 1rem; color: var(--hud-teal); 
+      padding: 1rem 2rem; justify-content: center; 
+      background: var(--panel-bg); border-radius: var(--radius); border: 1px solid var(--grid-line);
+    }
+    .hero-separator { display: inline; }
 
-    /* --- ANIMATED SCROLL INDICATOR --- */
-    .scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; cursor: pointer; opacity: 0.7; transition: 0.3s; }
-    .scroll-indicator:hover { opacity: 1; transform: translateY(5px); }
-    .scroll-arrow { width: 20px; height: 20px; border-right: 3px solid var(--hud-teal); border-bottom: 3px solid var(--hud-teal); transform: rotate(45deg); margin: -5px; animation: scroll-pulse 2s infinite; box-shadow: 2px 2px 5px rgba(65, 194, 213, 0.2); }
-    .scroll-arrow:nth-child(1) { animation-delay: 0s; }
+    .countdown-bar { 
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; 
+      width: 100%; max-width: 900px; margin: 3rem 0; 
+    }
+    .count-segment { 
+      padding: 1.5rem; background: var(--card-bg); border: 1px solid var(--grid-line); border-radius: var(--radius);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .count-val { font-size: 2.5rem; font-weight: 800; color: var(--hud-white); line-height: 1; }
+    .count-lbl { font-size: 0.8rem; opacity: 0.7; color: var(--hud-teal); margin-top: 0.5rem; font-weight: bold; letter-spacing: 1px; }
+
+    .scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); opacity: 0.6; cursor: pointer; }
+    .scroll-arrow { width: 16px; height: 16px; border-right: 2px solid var(--hud-teal); border-bottom: 2px solid var(--hud-teal); transform: rotate(45deg); margin: -4px auto; animation: scroll-pulse 2s infinite; }
     .scroll-arrow:nth-child(2) { animation-delay: 0.15s; }
     .scroll-arrow:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes scroll-pulse { 0% { opacity: 0; transform: rotate(45deg) translate(-5px, -5px); } 50% { opacity: 1; } 100% { opacity: 0; transform: rotate(45deg) translate(5px, 5px); } }
+    @keyframes scroll-pulse { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
 
     /* =========================================
-       LAYOUT STYLE
+       5. CONTENT MODULES
        ========================================= */
-    .modules-container { max-width: 1600px; width: 95%; margin: 0 auto; padding: 4rem 0; display: flex; flex-direction: column; gap: 1.5rem; }
+    .modules-container { 
+      width: 100%; margin: 0; padding: 6rem 4rem; 
+      display: flex; flex-direction: column; gap: 2rem; 
+    }
     .featured-panel { width: 100%; }
-    .featured-body { padding: 2.5rem; display: flex; gap: 4rem; align-items: center; }
+    .featured-body { padding: 3rem; display: flex; gap: 4rem; align-items: center; }
     .featured-text { flex: 1; }
     .featured-grid-wrap { flex: 1; width: 100%; }
-    .grid-row { display: flex; gap: 1.5rem; align-items: flex-start; width: 100%; }
-    .module-col { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
+    .grid-row { display: flex; gap: 2rem; align-items: flex-start; width: 100%; }
+    .module-col { flex: 1; display: flex; flex-direction: column; gap: 2rem; }
 
-    .panel { background: var(--bg-color); border: 2px solid var(--grid-line); position: relative; transition: 0.3s; overflow: hidden; display: flex; flex-direction: column; }
-    .panel:hover { border-color: var(--hud-teal); box-shadow: 0 0 30px var(--hud-teal-dim); }
-    .p-head { background: var(--grid-line); color: var(--hud-teal); padding: 0.6rem 1rem; font-size: 0.85rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--bg-color); }
-    .p-controls { display: flex; gap: 6px; }
-    .dot { width: 8px; height: 8px; background: #475569; border-radius: 50%; }
-    .panel:hover .dot { background: var(--hud-teal); }
+    .panel { 
+      background: var(--panel-bg); border: 1px solid var(--grid-line); border-radius: var(--radius);
+      overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .panel:hover { border-color: var(--hud-teal); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--hud-teal-dim); }
+    
+    .p-head { 
+      background: var(--bg-color); border-bottom: 1px solid var(--grid-line);
+      padding: 1rem 1.5rem; font-size: 0.9rem; font-weight: 700; color: var(--hud-teal);
+      display: flex; justify-content: space-between; align-items: center; letter-spacing: 0.5px;
+    }
+    .p-controls { display: flex; gap: 8px; }
+    .dot { width: 10px; height: 10px; background: var(--grid-line); border-radius: 50%; }
     .p-body { padding: 2rem; flex: 1; }
 
-    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--grid-line); }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding-top: 1rem; border-top: 1px dashed var(--grid-line); }
     .featured-body .info-grid { border-top: none; padding-top: 0; }
     .info-item { display: flex; flex-direction: column; }
-    .info-label { color: var(--hud-teal); font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; opacity: 0.8; }
-    .info-val { color: var(--hud-white); font-size: 1rem; font-weight: bold; }
-    .redacted { background: var(--hud-teal); color: var(--bg-color); padding: 2px 6px; font-weight: 800; cursor: help; }
+    .info-label { color: var(--hud-teal); font-size: 0.75rem; font-weight: bold; margin-bottom: 0.5rem; opacity: 0.8; letter-spacing: 1px; }
+    .info-val { color: var(--hud-white); font-size: 1.1rem; font-weight: bold; }
 
-    .mode-card { background: rgba(125, 125, 125, 0.05); border: 1px solid var(--grid-line); padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: 0.2s; margin-bottom: 1rem; }
+    .mode-card { 
+      background: var(--bg-color); border: 1px solid var(--grid-line); border-radius: var(--radius);
+      padding: 1.5rem; display: flex; align-items: flex-start; gap: 1.5rem; 
+      margin-bottom: 1rem; transition: 0.2s; 
+    }
     .mode-card:last-child { margin-bottom: 0; }
-    .mode-card:hover { border-color: var(--hud-teal); background: var(--hud-teal-dim); }
-    .mode-icon { font-size: 2rem; }
-    .mode-info h3 { margin: 0; color: var(--hud-teal); font-size: 1rem; text-transform: uppercase; }
-    .mode-info p { margin: 0.5rem 0 0; color: var(--text-dim); font-size: 0.8rem; line-height: 1.4; }
+    .mode-card:hover { border-color: var(--hud-teal); transform: translateX(5px); }
+    .mode-icon { font-size: 2rem; background: var(--hud-teal-dim); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+    .mode-info h3 { margin: 0 0 0.5rem 0; color: var(--hud-white); font-size: 1.1rem; }
+    .mode-info p { margin: 0; color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; }
 
-    .map-wrap { position: relative; height: 300px; }
+    .map-wrap { position: relative; height: 350px; }
     iframe { width: 100%; height: 100%; border: none; filter: grayscale(100%) invert(90%) hue-rotate(180deg) contrast(1.2); }
-    .reticle { position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; border: 1px solid rgba(65, 194, 213, 0.3); pointer-events: none; }
-    .target-tag { position: absolute; bottom: 20px; left: 20px; background: black; color: var(--hud-teal); padding: 4px 8px; border: 1px solid var(--hud-teal); font-size: 0.7rem; font-weight: bold; }
+    .target-tag { 
+      position: absolute; bottom: 20px; left: 20px; background: var(--bg-color); color: var(--hud-teal); 
+      padding: 8px 16px; border: 1px solid var(--hud-teal); font-size: 0.8rem; font-weight: bold; border-radius: 8px;
+    }
 
     .discord-panel { border-color: var(--hud-purple) !important; }
     .discord-panel .p-head { color: var(--hud-purple); }
-    .discord-btn { display: block; width: 100%; padding: 1rem; margin-top: 1rem; background: var(--hud-purple); color: black; font-weight: 800; text-transform: uppercase; text-align: center; text-decoration: none; transition: 0.2s; }
-    .discord-btn:hover { background: white; box-shadow: 0 0 15px var(--hud-purple); }
+    .discord-btn { 
+      display: block; width: 100%; padding: 1.2rem; margin-top: 1.5rem; 
+      background: var(--hud-purple); color: white; font-weight: 800; text-transform: uppercase; text-align: center; 
+      text-decoration: none; border-radius: var(--radius); transition: 0.2s; 
+    }
+    .discord-btn:hover { background: #a855f7; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(192, 132, 252, 0.3); }
 
-    /* SPONSOR GRID STYLES (REVERSED TO 3 COLUMNS) */
     .sponsor-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 Columns to fill horizontal space better */
-      gap: 10px;
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px dashed var(--grid-line);
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
+      margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed var(--grid-line);
     }
     .sponsor-slot {
-      aspect-ratio: 3/2;
-      border: 1px dashed var(--grid-line);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      background: rgba(0,0,0,0.2);
-      transition: 0.3s;
-      cursor: pointer;
-      text-transform: uppercase;
-      font-weight: bold;
+      aspect-ratio: 3/1.5; border: 2px dashed var(--grid-line); border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; color: var(--text-dim); transition: 0.3s; cursor: pointer; font-weight: bold; letter-spacing: 1px;
     }
-    .sponsor-slot:hover {
-      border-color: var(--hud-teal);
-      color: var(--hud-teal);
-      box-shadow: 0 0 10px var(--hud-teal-dim);
-    }
+    .sponsor-slot:hover { border-color: var(--hud-teal); color: var(--hud-teal); background: var(--hud-teal-dim); }
 
-    .faq-item { border: 1px solid var(--grid-line); margin-bottom: 10px; background: rgba(125,125,125,0.05); transition: all 0.2s ease; }
-    .faq-item:hover { border-color: rgba(65, 194, 213, 0.5); }
-    .faq-item[open] { border-color: var(--hud-teal); background: var(--hud-teal-dim); }
-    summary { padding: 1rem; cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
-    summary::after { content: "+"; color: var(--hud-teal); font-size: 1.2rem; }
+    .faq-item { 
+      border: 1px solid var(--grid-line); margin-bottom: 12px; background: var(--bg-color); border-radius: 8px; overflow: hidden;
+    }
+    .faq-item:hover { border-color: var(--hud-teal); }
+    .faq-item[open] { border-color: var(--hud-teal); }
+    summary { padding: 1.2rem; cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    summary::after { content: "+"; color: var(--hud-teal); font-size: 1.5rem; font-weight: 300; }
     details[open] summary::after { content: "-"; }
-    .faq-ans { padding: 0 1rem 1rem; color: var(--text-dim); font-size: 0.9rem; border-top: 1px dashed var(--grid-line); margin-top: 0.5rem; padding-top: 1rem; animation: fadeIn 0.3s ease-in; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    .faq-ans { padding: 0 1.2rem 1.2rem; color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; border-top: 1px solid var(--grid-line); margin-top: 0; padding-top: 1.2rem; }
 
-    footer { padding: 5rem 2rem; text-align: center; border-top: 5px solid var(--hud-teal); background: var(--panel-bg); }
-    .ascii-tower { font-size: 12px; line-height: 12px; white-space: pre; color: var(--grid-line); margin-bottom: 2rem; }
+    footer { padding: 6rem 4rem; text-align: center; border-top: 1px solid var(--grid-line); background: var(--bg-color); }
     
-    /* UPDATED FOOTER LINKS WITH ICONS */
     .footer-socials { display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
     .footer-link { 
-      color: var(--hud-white); 
-      text-decoration: none; 
-      font-size: 0.9rem; 
-      border: 1px solid transparent; 
-      padding: 0.5rem 1rem; 
-      transition: 0.2s; 
-      display: flex; 
-      align-items: center; 
-      gap: 0.5rem;
+      color: var(--hud-white); text-decoration: none; font-size: 0.9rem; border: 1px solid transparent; padding: 0.5rem 1rem; transition: 0.2s; display: flex; align-items: center; gap: 0.5rem;
     }
     .footer-link:hover { border-color: var(--hud-teal); color: var(--hud-teal); background: var(--hud-teal-dim); }
     .footer-link svg { width: 18px; height: 18px; fill: currentColor; }
 
-    /* --- SECRET MODAL --- */
-    .secret-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-    .secret-content { border: 2px solid var(--hud-teal); background: #000; padding: 3rem; text-align: center; box-shadow: 0 0 50px var(--hud-teal); animation: modalPop 0.3s ease-out; max-width: 90%; }
-    @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .secret-title { font-size: 2rem; color: var(--hud-teal); margin-bottom: 1rem; font-weight: 800; letter-spacing: 2px; }
-    .secret-text { color: var(--text-dim); margin-bottom: 2rem; }
-    .flag-box { background: #111; color: #fff; padding: 1rem 2rem; font-size: 1.5rem; border: 1px dashed var(--hud-teal); font-family: monospace; letter-spacing: 2px; margin-bottom: 2rem; }
+    .secret-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+    .secret-content { border: 1px solid var(--hud-teal); background: var(--bg-color); padding: 3rem; text-align: center; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-width: 90%; }
+    .secret-title { font-size: 1.5rem; color: var(--hud-teal); margin-bottom: 1rem; font-weight: 800; }
+    .flag-box { background: var(--panel-bg); color: var(--hud-white); padding: 1rem 2rem; font-size: 1.2rem; border-radius: 8px; border: 1px dashed var(--grid-line); font-family: monospace; margin-bottom: 2rem; }
     .close-secret { background: var(--hud-teal); color: #000; padding: 0.8rem 2rem; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; }
     .close-secret:hover { background: #fff; }
 
-    /* /// CHALLENGE 3: THE GHOST ELEMENT /// */
     .ghost-flag { opacity: 0.02; pointer-events: none; position: absolute; bottom: 10px; left: 10px; color: var(--hud-teal); font-size: 8px; }
-    .panel:hover .ghost-flag { opacity: 0; /* Hides when you look too close */ }
+    .panel:hover .ghost-flag { opacity: 0; }
 
-    /* --- BACK TO TOP BUTTON --- */
-    #backToTop {
-      position: fixed;
-      bottom: 20px;
-      left: 20px; /* Bottom Left to not conflict with Theme Switch */
-      background: var(--hud-teal);
-      color: var(--bg-color);
-      border: none;
-      padding: 10px 15px;
-      font-weight: bold;
-      font-family: 'JetBrains Mono', monospace;
-      cursor: pointer;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.3s;
-      z-index: 1000;
-    }
-    #backToTop.visible { opacity: 1; pointer-events: all; }
-
-    /* --- MOBILE RESPONSIVE TWEAKS --- */
+    /* =========================================
+       6. MOBILE OPTIMIZATION QUERIES
+       ========================================= */
     @media (max-width: 900px) {
+      header { padding-top: 6rem; padding-bottom: 2rem; }
+      .modules-container { padding: 4rem 1rem; }
+      footer { padding: 4rem 1rem; }
+
       .featured-body { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
       .grid-row { flex-direction: column; }
-      .hero-data { flex-direction: column; gap: 1rem; align-items: center; }
+      .hero-data { flex-direction: column; gap: 0.8rem; align-items: center; width: 100%; }
+      .hero-separator { display: none; }
       
-      /* Switch to 2x2 grid for countdown on mobile */
-      .countdown-bar { grid-template-columns: 1fr 1fr; }
-      .count-segment:nth-child(2) { border-right: none; } /* Remove border for 2nd item in 2x2 grid */
-      .count-segment { border-bottom: 2px solid var(--grid-line); }
-      .count-segment:nth-last-child(-n+2) { border-bottom: none; } /* Remove bottom border for last row */
-
-      /* Stack buttons */
-      .cta-container { flex-direction: column; gap: 1rem; }
-      .btn-secondary { border-left: none; border-top: 2px solid var(--hud-white); }
+      .countdown-bar { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .cta-container { flex-direction: column; gap: 1rem; width: 100%; }
+      
+      h1 { font-size: 15vw; }
+      .system-status { font-size: 0.7rem; padding: 0.4rem 1rem; }
+      
+      .theme-switch-wrapper { 
+        top: auto; bottom: 20px; right: 20px; 
+        box-shadow: 0 0 15px rgba(0,0,0,0.5); border-color: var(--hud-teal); 
+        padding: 6px 12px;
+      }
+      #backToTop { bottom: 20px; left: 20px; }
       
       .info-grid { grid-template-columns: 1fr; gap: 1rem; }
-      
-      /* Move theme switch to bottom right on mobile for easier reach (FAB style) */
-      .theme-switch-wrapper {
-        top: auto;
-        bottom: 20px;
-        right: 20px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.5);
-        border-color: var(--hud-teal);
-      }
-      
-      /* Adjust header padding so title doesn't hit the marquee */
-      header { padding-top: 5rem; }
-      h1 { font-size: 18vw; } /* Ensure huge text fits screen width */
+      .sponsor-grid { grid-template-columns: 1fr; }
     }
     
     @media (prefers-reduced-motion: reduce) {
-      *, ::before, ::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
+      *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
       .scanline, .marquee-container { display: none; }
     }
   </style>
@@ -342,36 +341,35 @@
     </label>
   </div>
 
-  <div class="scanline"></div>
   <div class="marquee-container">
     <div class="marquee-content">
-      /// QUEENSGATE CAMPUS /// HUDHACK 2026 /// BUILD. BREAK. SECURE. /// REGISTRATION OPEN /// PRIZES FOR TOP TEAMS /// JOIN DISCORD 
-      /// QUEENSGATE CAMPUS /// HUDHACK 2026 /// BUILD. BREAK. SECURE. /// REGISTRATION OPEN /// PRIZES FOR TOP TEAMS /// JOIN DISCORD 
-      /// QUEENSGATE CAMPUS /// HUDHACK 2026 /// BUILD. BREAK. SECURE. /// REGISTRATION OPEN /// PRIZES FOR TOP TEAMS /// JOIN DISCORD 
-      /// QUEENSGATE CAMPUS /// HUDHACK 2026 /// BUILD. BREAK. SECURE. /// REGISTRATION OPEN /// PRIZES FOR TOP TEAMS /// JOIN DISCORD ///
+      QUEENSGATE CAMPUS &nbsp;///&nbsp; HUDHACK 2026 &nbsp;///&nbsp; BUILD. BREAK. SECURE. &nbsp;///&nbsp; REGISTRATION OPEN &nbsp;///&nbsp; PRIZES FOR TOP TEAMS &nbsp;///&nbsp; JOIN DISCORD &nbsp;///&nbsp; QUEENSGATE CAMPUS &nbsp;///&nbsp; HUDHACK 2026 &nbsp;///&nbsp; BUILD. BREAK. SECURE. &nbsp;///&nbsp; REGISTRATION OPEN &nbsp;///&nbsp; PRIZES FOR TOP TEAMS &nbsp;///&nbsp; JOIN DISCORD &nbsp;///&nbsp; 
+      QUEENSGATE CAMPUS &nbsp;///&nbsp; HUDHACK 2026 &nbsp;///&nbsp; BUILD. BREAK. SECURE. &nbsp;///&nbsp; REGISTRATION OPEN &nbsp;///&nbsp; PRIZES FOR TOP TEAMS &nbsp;///&nbsp; JOIN DISCORD &nbsp;///&nbsp; QUEENSGATE CAMPUS &nbsp;///&nbsp; HUDHACK 2026 &nbsp;///&nbsp; BUILD. BREAK. SECURE. &nbsp;///&nbsp; REGISTRATION OPEN &nbsp;///&nbsp; PRIZES FOR TOP TEAMS &nbsp;///&nbsp; JOIN DISCORD &nbsp;///&nbsp; 
     </div>
   </div>
 
   <header>
     <div class="system-status">:: ORGANISED BY THE CYBER SECURITY SOCIETY ::</div>
     <h1>HUD<br><span>HACK</span></h1>
+    
     <div class="hero-data">
       <span>LOC: HASLETT (HA4/04)</span>
-      <span>//</span>
+      <span class="hero-separator">//</span>
       <span>DATE: 26.02.26</span>
-      <span>//</span>
+      <span class="hero-separator">//</span>
       <span>STATUS: BOOKING REQUIRED</span>
     </div>
+    
     <div class="countdown-bar">
       <div class="count-segment"><span id="days" class="count-val">00</span><span class="count-lbl">DAYS</span></div>
       <div class="count-segment"><span id="hours" class="count-val">00</span><span class="count-lbl">HRS</span></div>
       <div class="count-segment"><span id="minutes" class="count-val">00</span><span class="count-lbl">MIN</span></div>
       <div class="count-segment"><span id="seconds" class="count-val">00</span><span class="count-lbl">SEC</span></div>
     </div>
+    
     <div class="cta-container">
-      <a href="https://forms.gle/gZ5BYTa1a2xF7UcJ9" class="btn-brutal">Sign Up Here</a>
-      
-      <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=HUDHACK+2026&dates=20260226T100000/20260226T180000&details=Cyber+Security+Hackathon.+Build.+Break.+Secure.&location=Haslett+Building+(HA4/04),+University+of+Huddersfield&ctz=Europe/London" target="_blank" class="btn-brutal btn-secondary">Sync Cal</a>
+      <a href="https://forms.gle/6jvZhqSb7XbkuyMh6" class="btn-brutal">Sign Up Here</a>
+      <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=HUDHACK+2026&dates=20260226T100000/20260226T180000&details=Cyber+Security+Hackathon.+Build.+Break.+Secure.&location=Haslett+Building+(HA4/04),+University+of+Huddersfield&ctz=Europe/London" target="_blank" class="btn-brutal btn-secondary">Sync Calendar</a>
     </div>
     
     <div class="scroll-indicator" onclick="document.getElementById('main-content').scrollIntoView({behavior: 'smooth'})">
@@ -383,29 +381,28 @@
 
   <div class="modules-container" id="main-content">
 
-    <div class="panel featured-panel">
+    <div class="panel featured-panel reveal">
       <div class="p-head">
-        <span>01 // About the Event</span>
+        <span>About the Event</span>
         <div class="p-controls"><div class="dot"></div><div class="dot"></div></div>
       </div>
       <div class="p-body featured-body">
         <div class="featured-text">
           <p style="margin-top:0; font-weight:700; color:var(--hud-teal); font-size:1.1rem; margin-bottom:1rem;">EVENT OVERVIEW</p>
           <p style="color:var(--text-dim); line-height: 1.6;">
-            <strong>HudHack</strong> is the inaugural hackathon organised by the University of Huddersfield Cyber Security Society. 
+            HudHack is the inaugural hackathon organised by the University of Huddersfield Cyber Security Society. 
             <br><br>
-            Beyond the competition, the event will feature industry talks and potential workshops throughout the day.
+            <strong>Theme: Break The Loop</strong><br>
+            For the main project-building challenge, the theme “Break The Loop” focuses on identifying everyday student problems (during their time at university or in general life), repetitive frustrations, and inefficient systems, and using technology to design practical, meaningful solutions that improve real aspects of our lives such as accessibility, sustainability, wellbeing, safety, and support. 
             <br><br>
-            The event brings together students to compete in two parallel tracks: a Product Build challenge and a Capture The Flag (CTF) security arena. 
-            <br><br>
-            Open to all skill levels, HudHack provides a collaborative environment for developers, ethical hackers, and creatives to innovate, problem-solve, and secure the top prizes.
+            How many times have you encountered a problem and hoped for someone else to find an effective solution? This is an invitation to fix what bugs you everyday.
           </p>
         </div>
         <div class="featured-grid-wrap">
           <div class="info-grid">
             <div class="info-item"><span class="info-label">DATE</span><span class="info-val">26 FEB 2026</span></div>
             <div class="info-item"><span class="info-label">TIME</span><span class="info-val">10:00 - 18:00</span></div>
-            <div class="info-item"><span class="info-label">THEME</span><span class="info-val"><span class="redacted">[CLASSIFIED]</span></span></div>
+            <div class="info-item"><span class="info-label">THEME</span><span class="info-val" style="color:var(--hud-purple); text-transform:uppercase;">BREAK THE LOOP</span></div>
             <div class="info-item"><span class="info-label">ADMISSION</span><span class="info-val">Free / Booking Req.</span></div>
           </div>
         </div>
@@ -415,13 +412,12 @@
 
     <div class="grid-row">
       <div class="module-col">
-        <div class="panel">
+        <div class="panel reveal">
           <div class="p-head">
-            <span>02 // Competition Tracks</span>
+            <span>Competition Tracks</span>
             <div class="p-controls"><div class="dot"></div><div class="dot"></div></div>
           </div>
           <div class="p-body">
-            
             <div class="mode-card">
               <div class="mode-icon">🛠️</div>
               <div class="mode-info">
@@ -429,23 +425,19 @@
                 <p>Teams work together to design and code a piece of software (like an App or Website) based on a specific theme given at the start of the day.</p>
               </div>
             </div>
-
             <div class="mode-card">
               <div class="mode-icon">🚩</div>
               <div class="mode-info">
                 <h3 style="color:var(--hud-teal);">The Security CTF</h3>
-                <p>
-                  Solve a series of CTF challenges across various categories. Topics include <strong>Cryptography, Forensics, OSINT, Web Exploitation</strong>, and more. Find the "flags" to score points.
-                </p>
+                <p>Solve a series of CTF challenges across various categories. Topics include <strong>Cryptography, Forensics, OSINT, Web Exploitation</strong>, and more. Find the "flags" to score points.</p>
               </div>
             </div>
-
           </div>
         </div>
 
-        <div class="panel">
+        <div class="panel reveal">
           <div class="p-head">
-            <span>03 // Event Schedule</span>
+            <span>Event Schedule</span>
             <div class="p-controls"><div class="dot"></div><div class="dot"></div></div>
           </div>
           <div class="p-body" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 200px;">
@@ -453,25 +445,24 @@
             <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 80%;">
               The official timeline for the day is currently being <strong>finalised</strong>. 
               <br><br>
-              Get ready for a packed schedule featuring coding challenges, industry talks, workshops, and plenty of <strong>food</strong> to keep you fueled.
+              Expect a full day packed with coding, workshops, and <strong>food</strong>.
             </p>
           </div>
         </div>
 
-        <div class="panel discord-panel">
-          <div class="p-head"><span>05 // Community</span><div class="p-controls"><div class="dot" style="background:var(--hud-purple)"></div></div></div>
+        <div class="panel discord-panel reveal">
+          <div class="p-head"><span>Community</span><div class="p-controls"><div class="dot" style="background:var(--hud-purple)"></div></div></div>
           <div class="p-body" style="text-align: center;">
             <p style="color:var(--text-dim); margin-bottom:1.5rem; font-size:0.9rem;">Need a team? Have questions? Want CTF hints? Join our community server.</p>
             <a href="https://discord.gg/MpJk8bGSRV" class="discord-btn">>> JOIN DISCORD SERVER <<</a>
           </div>
         </div>
 
-        <div class="panel" style="border-color: var(--hud-teal);">
-          <div class="p-head"><span>08 // Partner with Us</span><div class="p-controls"><div class="dot" style="background: var(--hud-teal);"></div></div></div>
+        <div class="panel reveal" style="border-color: var(--hud-teal);">
+          <div class="p-head"><span>Partner with Us</span><div class="p-controls"><div class="dot" style="background: var(--hud-teal);"></div></div></div>
           <div class="p-body">
             <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:1.5rem;">Interested in supporting student innovation? We are looking for partners to provide prizes, food, or mentorship.</p>
             <a href="mailto:hudcybersoc@gmail.com" class="btn-brutal" style="display:block; text-align:center; padding:1rem; font-size:0.9rem; background:transparent; border: 1px solid var(--hud-teal); color:var(--hud-teal);">Become a Sponsor</a>
-            
             <div class="sponsor-grid">
               <div class="sponsor-slot">Available</div>
               <div class="sponsor-slot">Available</div>
@@ -482,17 +473,16 @@
       </div>
 
       <div class="module-col">
-        <div class="panel" style="padding:0;">
-          <div class="p-head"><span>04 // Location</span><div class="p-controls"><div class="dot"></div><div class="dot"></div></div></div>
+        <div class="panel reveal" style="padding:0;">
+          <div class="p-head"><span>Location</span><div class="p-controls"><div class="dot"></div><div class="dot"></div></div></div>
           <div class="map-wrap">
             <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=-1.78069%2C53.63965%2C-1.77469%2C53.64365&layer=mapnik&marker=53.641659%2C-1.777690"></iframe>
-            <div class="reticle"></div>
             <div class="target-tag">TARGET: HASLETT BLDG (HA4/04)</div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="p-head"><span>07 // Prizes & Awards</span><div class="p-controls"><div class="dot"></div></div></div>
+        <div class="panel reveal">
+          <div class="p-head"><span>Prizes & Awards</span><div class="p-controls"><div class="dot"></div></div></div>
           <div class="p-body" style="text-align: center; padding: 3rem 1rem;">
             <div style="background: rgba(45, 212, 191, 0.1); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; border: 1px solid var(--hud-teal);"><span style="font-size: 1.5rem;">🏆</span></div>
             <h3 style="color: var(--hud-white); margin: 0 0 0.5rem 0; text-transform: uppercase; font-size: 1.1rem;">To Be Announced</h3>
@@ -500,32 +490,15 @@
           </div>
         </div>
 
-        <div class="panel">
-          <div class="p-head"><span>06 // FAQ</span><div class="p-controls"><div class="dot"></div></div></div>
+        <div class="panel reveal">
+          <div class="p-head"><span>FAQ</span><div class="p-controls"><div class="dot"></div></div></div>
           <div class="p-body">
             <details class="faq-item"><summary>Do I need cyber security experience?</summary><div class="faq-ans">No. The event is open to all backgrounds. We have beginner-friendly challenges and mentors on standby.</div></details>
             <details class="faq-item"><summary>Can I start coding beforehand?</summary><div class="faq-ans">No. All project code must be created during the event timeframe. Brainstorming and wireframing beforehand is permitted.</div></details>
-            
-            <details class="faq-item">
-              <summary>What equipment do I need?</summary>
-              <div class="faq-ans">Please bring your own laptop and charger. Power strips and Wi-Fi will be provided at the venue.</div>
-            </details>
-
-            <details class="faq-item">
-              <summary>What if I don't have a team?</summary>
-              <div class="faq-ans">Don't worry! We can help you find a team on our Discord server beforehand, or we will help you find teammates on the day of the event.</div>
-            </details>
-
-            <details class="faq-item">
-              <summary>How do teams work?</summary>
-              <div class="faq-ans">Teams can have between 1 and 6 members. You can also hack solo if you prefer the "lone wolf" approach.</div>
-            </details>
-
-            <details class="faq-item">
-              <summary>Can non-Huddersfield students attend?</summary>
-              <div class="faq-ans">No. This event is exclusive to students currently enrolled at the University of Huddersfield. You will need your student ID for entry.</div>
-            </details>
-
+            <details class="faq-item"><summary>What equipment do I need?</summary><div class="faq-ans">Please bring your own laptop and charger. Power strips and Wi-Fi will be provided at the venue.</div></details>
+            <details class="faq-item"><summary>What if I don't have a team?</summary><div class="faq-ans">Don't worry! We can help you find a team on our Discord server beforehand, or we will help you find teammates on the day of the event.</div></details>
+            <details class="faq-item"><summary>How do teams work?</summary><div class="faq-ans">Teams can have between 1 and 6 members. You can also hack solo if you prefer the "lone wolf" approach.</div></details>
+            <details class="faq-item"><summary>Can non-Huddersfield students attend?</summary><div class="faq-ans">No. This event is exclusive to students currently enrolled at the University of Huddersfield. You will need your student ID for entry.</div></details>
             <details class="faq-item"><summary>Is food provided?</summary><div class="faq-ans">Yes. Food and refreshments will be provided for all attendees. Specific details on the menu and timing will be confirmed closer to the date. We will accommodate dietary requirements where possible.</div></details>
           </div>
         </div>
@@ -539,32 +512,42 @@
     <div class="footer-socials">
       <a href="mailto:hudcybersoc@gmail.com" class="footer-link">
         <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        EMAIL HQ
+        EMAIL
       </a>
       <a href="https://www.instagram.com/hudcybersoc/" class="footer-link">
-        <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0-3-3z"/></svg>
         INSTAGRAM
       </a>
       <a href="https://www.linkedin.com/company/huddscybersoc/" class="footer-link">
         <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
         LINKEDIN
       </a>
-      <a href="https://github.com/Shaharyar01" class="footer-link">
-        <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5c.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34c-.46-1.16-1.11-1.47-1.11-1.47c-.91-.62.07-.6.07-.6c1 .07 1.53 1.03 1.53 1.03c.87 1.52 2.34 1.07 2.91.83c.09-.65.35-1.09.63-1.34c-2.22-.25-4.55-1.11-4.55-4.92c0-1.11.38-2 1.03-2.71c-.1-.25-.45-1.29.1-2.64c0 0 .84-.27 2.75 1.02c.79-.22 1.65-.33 2.5-.33c.85 0 1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02c.55 1.35.2 2.39.1 2.64c.65.71 1.03 1.6 1.03 2.71c0 3.82-2.34 4.66-4.57 4.91c.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
-        GITHUB
+      <a href="https://www.tiktok.com/@hudcybersoc?_r=1&_t=ZN-93JRhnTTT2U" class="footer-link">
+        <svg viewBox="0 0 24 24"><path d="M21 7.5c-1.8 0-3.5-.6-4.9-1.7V15c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.4 0 .8 0 1.2.1v3.1c-.4-.1-.8-.2-1.2-.2-1.6 0-2.9 1.3-2.9 2.9s1.3 2.9 2.9 2.9 3-1.3 3-2.9V3h3c.3 2.1 2.1 3.7 4.2 3.7v.8z"/></svg>
+        TIKTOK
       </a>
     </div>
     
-    <p> 2026 UNIVERSITY OF HUDDERSFIELD CYBER SECURITY SOCIETY</p>
-    <div style="margin-top: 1.5rem; font-size: 0.8rem; opacity: 0.6;">
-      <a href="#" style="color: var(--hud-white); text-decoration: none; margin: 0 10px;">CODE OF CONDUCT</a>
-      <span style="color:var(--grid-line)">|</span>
-      <a href="#" style="color: var(--hud-white); text-decoration: none; margin: 0 10px;">PRIVACY POLICY</a>
-    </div>
+    <p>© 2026 UNIVERSITY OF HUDDERSFIELD CYBER SECURITY SOCIETY</p>
   </footer>
 
   <script>
-    /* THEME TOGGLE LOGIC */
+    /* 1. SCROLL REVEAL */
+    function reveal() {
+      var reveals = document.querySelectorAll(".reveal");
+      for (var i = 0; i < reveals.length; i++) {
+        var windowHeight = window.innerHeight;
+        var elementTop = reveals[i].getBoundingClientRect().top;
+        var elementVisible = 100;
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add("active");
+        }
+      }
+    }
+    window.addEventListener("scroll", reveal);
+    reveal(); // Trigger on load
+
+    /* 2. THEME TOGGLE */
     function toggleTheme(isChecked) {
       const body = document.body;
       if (isChecked) {
@@ -576,12 +559,12 @@
       }
     }
 
-    /* LOAD SAVED THEME */
+    /* Load Saved Theme */
     const savedTheme = localStorage.getItem('theme');
     const checkbox = document.getElementById('checkbox');
     if (savedTheme === 'light') { document.body.classList.add('light-mode'); checkbox.checked = true; }
 
-    /* EASTER EGG LOGIC (KONAMI) */
+    /* 3. KONAMI CODE (Easter Egg) */
     const secretCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
     let currentSequence = [];
     document.addEventListener('keydown', (e) => {
@@ -593,18 +576,15 @@
       }
     });
 
-    /* CHALLENGE 2: SETTING THE COOKIE FLAG (The Cookie Monster) */
-    document.cookie = "hudhack_token=HUDHACK{C00K13_M0NST3R}; path=/";
-
-    /* CHALLENGE 4: THE CONSOLE LOG (The Console Cowboy) */
-    /* Decodes to: HUDHACK{B4S364_D3C0D3R} */
-    const msg = "U3lzdGVtIERpYWdub3N0aWM6IERhdGEgQ29ycnVwdGlvbi4gUmVjb3ZlcmVkIEZyYWdtZW50OiBIVURIQUNLe0I0UzM2NF9EM0MwRDNSfQ==";
+    /* 4. CTF CHALLENGES */
+    document.cookie = "hudhack_token=HUDHACK{C00K13_M0NST3R}; path=/"; // Flag 1
+    const msg = "U3lzdGVtIERpYWdub3N0aWM6IERhdGEgQ29ycnVwdGlvbi4gUmVjb3ZlcmVkIEZyYWdtZW50OiBIVURIQUNLe0I0UzM2NF9EM0MwRDNSfQ=="; // Flag 2
     console.log("%c⚠️ SYSTEM WARNING ⚠️", "color: red; font-weight: bold; font-size: 20px;");
     console.log("Error 0x5F: Unknown string detected in memory buffer.");
     console.log("Raw Data: " + msg);
     console.log("Hint: Use a Base64 decoder to analyse the raw data.");
 
-    /* COUNTDOWN TIMER: UPDATED TO 10 AM */
+    /* 5. COUNTDOWN TIMER */
     const eventTime = new Date("2026-02-26T10:00:00").getTime();
     function updateCountdown() {
       const now = new Date().getTime();
@@ -618,7 +598,7 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    /* BACK TO TOP BUTTON LOGIC */
+    /* 6. BACK TO TOP */
     window.addEventListener('scroll', () => {
       const btn = document.getElementById('backToTop');
       if (window.scrollY > 300) btn.classList.add('visible');
