@@ -10,8 +10,8 @@
   <meta property="og:title" content="HUDHACK 2026">
   <meta property="og:description" content="Cyber Security Hackathon. Build. Break. Secure. Feb 26 @ University of Huddersfield.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://your-website-url.com">
-  <meta property="og:image" content="https://your-website-url.com/og-image.png">
+  <meta property="og:url" content="https://hudhack.com">
+  <meta property="og:image" content="Logo1.png">
   <meta name="theme-color" content="#0f172a">
 
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
@@ -270,16 +270,6 @@
     .footer-link:hover { border-color: var(--hud-teal); color: var(--hud-teal); background: var(--hud-teal-dim); }
     .footer-link svg { width: 18px; height: 18px; fill: currentColor; }
 
-    .secret-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-    .secret-content { border: 1px solid var(--hud-teal); background: var(--bg-color); padding: 3rem; text-align: center; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-width: 90%; }
-    .secret-title { font-size: 1.5rem; color: var(--hud-teal); margin-bottom: 1rem; font-weight: 800; }
-    .flag-box { background: var(--panel-bg); color: var(--hud-white); padding: 1rem 2rem; font-size: 1.2rem; border-radius: 8px; border: 1px dashed var(--grid-line); font-family: monospace; margin-bottom: 2rem; }
-    .close-secret { background: var(--hud-teal); color: #000; padding: 0.8rem 2rem; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; }
-    .close-secret:hover { background: #fff; }
-
-    .ghost-flag { opacity: 0.02; pointer-events: none; position: absolute; bottom: 10px; left: 10px; color: var(--hud-teal); font-size: 8px; }
-    .panel:hover .ghost-flag { opacity: 0; }
-
     /* =========================================
        6. MOBILE OPTIMIZATION QUERIES
        ========================================= */
@@ -317,21 +307,6 @@
   </style>
 </head>
 <body>
-
-  <div id="secretModal" class="secret-modal">
-    <div class="secret-content">
-      <div class="secret-title">/// SYSTEM OVERRIDE ///</div>
-      <p class="secret-text">KONAMI SEQUENCE RECOGNIZED. ACCESS GRANTED.</p>
-      <div class="flag-box">HUDHACK{V1CT0R1A_T0W3R_H1GH}</div>
-      <p style="color:var(--hud-teal); font-size: 0.9rem; margin-bottom: 1rem;">
-        Proof of Concept found. Submit this flag to claim the bounty.
-      </p>
-      <div style="display:flex; gap:10px; justify-content:center;">
-        <a href="#" target="_blank" class="btn-brutal" style="padding:0.5rem 1rem; font-size:0.9rem; background:var(--hud-teal); color:var(--bg-color); border:none;">SUBMIT FLAG</a>
-        <button class="close-secret" onclick="document.getElementById('secretModal').style.display='none'">CLOSE</button>
-      </div>
-    </div>
-  </div>
 
   <div class="theme-switch-wrapper">
     <span class="switch-label">LIGHT MODE</span>
@@ -406,7 +381,6 @@
             <div class="info-item"><span class="info-label">ADMISSION</span><span class="info-val">Free / Booking Req.</span></div>
           </div>
         </div>
-        <div class="ghost-flag">HUDHACK{INSPECT_EL3M3NT_G0D}</div>
       </div>
     </div>
 
@@ -564,27 +538,7 @@
     const checkbox = document.getElementById('checkbox');
     if (savedTheme === 'light') { document.body.classList.add('light-mode'); checkbox.checked = true; }
 
-    /* 3. KONAMI CODE (Easter Egg) */
-    const secretCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    let currentSequence = [];
-    document.addEventListener('keydown', (e) => {
-      currentSequence.push(e.key);
-      currentSequence = currentSequence.slice(-secretCode.length);
-      if (JSON.stringify(currentSequence) === JSON.stringify(secretCode)) {
-        document.getElementById('secretModal').style.display = 'flex';
-        console.log("%cSYSTEM OVERRIDE DETECTED: ACCESS GRANTED", "color: #2dd4bf; font-weight: bold; font-size: 16px;");
-      }
-    });
-
-    /* 4. CTF CHALLENGES */
-    document.cookie = "hudhack_token=HUDHACK{C00K13_M0NST3R}; path=/"; // Flag 1
-    const msg = "U3lzdGVtIERpYWdub3N0aWM6IERhdGEgQ29ycnVwdGlvbi4gUmVjb3ZlcmVkIEZyYWdtZW50OiBIVURIQUNLe0I0UzM2NF9EM0MwRDNSfQ=="; // Flag 2
-    console.log("%c⚠️ SYSTEM WARNING ⚠️", "color: red; font-weight: bold; font-size: 20px;");
-    console.log("Error 0x5F: Unknown string detected in memory buffer.");
-    console.log("Raw Data: " + msg);
-    console.log("Hint: Use a Base64 decoder to analyse the raw data.");
-
-    /* 5. COUNTDOWN TIMER */
+    /* 3. COUNTDOWN TIMER */
     const eventTime = new Date("2026-02-26T10:00:00").getTime();
     function updateCountdown() {
       const now = new Date().getTime();
@@ -598,7 +552,7 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    /* 6. BACK TO TOP */
+    /* 4. BACK TO TOP */
     window.addEventListener('scroll', () => {
       const btn = document.getElementById('backToTop');
       if (window.scrollY > 300) btn.classList.add('visible');
