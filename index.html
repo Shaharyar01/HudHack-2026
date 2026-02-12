@@ -91,16 +91,48 @@
     input:checked + .slider { background-color: var(--hud-teal); border-color: var(--hud-teal); }
     input:checked + .slider:before { transform: translateX(24px); background-color: white; }
 
-    /* Marquee - UPDATED TO MATCH REFERENCE IMAGE (Black Text) */
+    /* Marquee */
     .marquee-container {
       background: var(--hud-teal); 
-      color: #000000; /* Black text creates that high contrast cyber look */
+      color: #000000; 
       padding: 0.6rem 0; overflow: hidden; white-space: nowrap;
       position: fixed; top: 0; width: 100%; z-index: 1000; 
       font-weight: 800; font-size: 0.85rem; letter-spacing: 1px;
     }
     .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 60s linear infinite; }
     @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* Branding Section */
+    .branding-section {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .branding-label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .branding-grid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem 3.5rem;
+      background: var(--panel-bg);
+      border: 1px solid var(--grid-line);
+      border-radius: 50px;
+    }
+    .branding-logo {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    
 
     /* Buttons */
     .cta-container { display: flex; gap: 1.5rem; width: 100%; max-width: 600px; margin-top: 1rem; }
@@ -298,11 +330,13 @@
       
       .info-grid { grid-template-columns: 1fr; gap: 1rem; }
       .sponsor-grid { grid-template-columns: 1fr; }
+      
+      .branding-grid { padding: 1rem 2.5rem; }
     }
     
     @media (prefers-reduced-motion: reduce) {
       *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
-      .scanline, .marquee-container { display: none; }
+      .marquee-container { display: none; }
     }
   </style>
 </head>
@@ -333,6 +367,15 @@
       <span>DATE: 26.02.26</span>
       <span class="hero-separator">//</span>
       <span>STATUS: BOOKING REQUIRED</span>
+    </div>
+
+    <div class="branding-section reveal">
+      <span class="branding-label">Supported By</span>
+      <div class="branding-grid">
+        <a href="https://hackathons.org.uk" target="_blank">
+          <img id="hackathons-uk-logo" src="White.png" alt="Hackathons UK Logo" class="branding-logo">
+        </a>
+      </div>
     </div>
     
     <div class="countdown-bar">
@@ -524,19 +567,31 @@
     /* 2. THEME TOGGLE */
     function toggleTheme(isChecked) {
       const body = document.body;
+      const hUKLogo = document.getElementById('hackathons-uk-logo');
+      
       if (isChecked) {
         body.classList.add('light-mode');
         localStorage.setItem('theme', 'light');
+        if (hUKLogo) hUKLogo.src = 'Pink.png';
       } else {
         body.classList.remove('light-mode');
         localStorage.setItem('theme', 'dark');
+        if (hUKLogo) hUKLogo.src = 'White.png';
       }
     }
 
     /* Load Saved Theme */
     const savedTheme = localStorage.getItem('theme');
     const checkbox = document.getElementById('checkbox');
-    if (savedTheme === 'light') { document.body.classList.add('light-mode'); checkbox.checked = true; }
+    const hUKLogoInitial = document.getElementById('hackathons-uk-logo');
+    
+    if (savedTheme === 'light') { 
+      document.body.classList.add('light-mode'); 
+      checkbox.checked = true; 
+      if (hUKLogoInitial) hUKLogoInitial.src = 'Pink.png';
+    } else {
+      if (hUKLogoInitial) hUKLogoInitial.src = 'White.png';
+    }
 
     /* 3. COUNTDOWN TIMER */
     const eventTime = new Date("2026-02-26T10:00:00").getTime();
