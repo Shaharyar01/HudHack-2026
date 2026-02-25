@@ -21,15 +21,15 @@
        1. VARIABLES
        ========================================= */
     :root {
-      --bg-color: #0f172a;       
-      --panel-bg: #1e293b;       
+      --bg-color: #0f172a;        
+      --panel-bg: #1e293b;        
       --card-bg: rgba(30, 41, 59, 0.7);
-      --grid-line: #334155;      
-      --hud-teal: #41c2d5;       
+      --grid-line: #334155;       
+      --hud-teal: #41c2d5;        
       --hud-teal-dim: rgba(65, 194, 213, 0.15);
-      --hud-purple: #c084fc;     
-      --hud-white: #f1f5f9;      
-      --text-dim: #94a3b8;       
+      --hud-purple: #c084fc;      
+      --hud-white: #f1f5f9;       
+      --text-dim: #94a3b8;        
       --radius: 12px;
     }
 
@@ -37,8 +37,8 @@
       --bg-color: #f8fafc;        
       --panel-bg: #ffffff;
       --card-bg: #ffffff;        
-      --grid-line: #e2e8f0;       
-      --hud-white: #0f172a;       
+      --grid-line: #e2e8f0;        
+      --hud-white: #0f172a;        
       --text-dim: #64748b;        
       --hud-teal-dim: rgba(65, 194, 213, 0.1);
     }
@@ -131,8 +131,6 @@
       width: auto;
       display: block;
     }
-
-    
 
     /* Buttons */
     .cta-container { display: flex; gap: 1.5rem; width: 100%; max-width: 600px; margin-top: 1rem; }
@@ -302,6 +300,46 @@
     .footer-link:hover { border-color: var(--hud-teal); color: var(--hud-teal); background: var(--hud-teal-dim); }
     .footer-link svg { width: 18px; height: 18px; fill: currentColor; }
 
+    /* NEW STYLES FOR SCHEDULE & PRIZES */
+    /* Scrollable Schedule Wrapper */
+    .schedule-list { 
+        display: flex; 
+        flex-direction: column; 
+        width: 100%;
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 10px;
+        /* Firefox */
+        scrollbar-width: thin;
+        scrollbar-color: var(--hud-teal) var(--bg-color);
+    }
+    /* Webkit Scrollbar Styling */
+    .schedule-list::-webkit-scrollbar { width: 6px; }
+    .schedule-list::-webkit-scrollbar-track { background: var(--bg-color); }
+    .schedule-list::-webkit-scrollbar-thumb { background: var(--hud-teal); border-radius: 10px; }
+    
+    .schedule-item { 
+      display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px dashed var(--grid-line); 
+      align-items: center; font-size: 0.9rem;
+    }
+    .schedule-item:last-child { border-bottom: none; }
+    .time-badge { 
+      background: var(--hud-teal-dim); color: var(--hud-teal); 
+      padding: 0.3rem 0.8rem; border-radius: 4px; font-weight: bold; min-width: 90px; text-align: center; white-space: nowrap;
+    }
+    .event-name { font-weight: bold; color: var(--hud-white); }
+    .event-loc { font-size: 0.8rem; color: var(--text-dim); margin-left: auto; text-align: right; }
+
+    .prize-list { display: flex; flex-direction: column; gap: 1rem; text-align: left; }
+    .prize-item { 
+      background: var(--bg-color); border: 1px solid var(--grid-line); padding: 1rem; 
+      border-radius: var(--radius); display: flex; align-items: center; gap: 1rem; 
+    }
+    .prize-rank { font-size: 1.5rem; }
+    .prize-desc { display: flex; flex-direction: column; }
+    .prize-title { font-weight: bold; color: var(--hud-teal); text-transform: uppercase; font-size: 0.8rem; }
+    .prize-name { font-weight: 800; color: var(--hud-white); font-size: 1rem; }
+
     /* =========================================
        6. MOBILE OPTIMIZATION QUERIES
        ========================================= */
@@ -446,7 +484,7 @@
               <div class="mode-icon">🚩</div>
               <div class="mode-info">
                 <h3 style="color:var(--hud-teal);">The Security CTF</h3>
-                <p>Solve a series of CTF challenges across various categories. Topics include <strong>Cryptography, Forensics, OSINT, Web Exploitation</strong>, and more. Find the "flags" to score points.</p>
+                <p>Solve a series of CTF challenges across various categories. Topics include <strong>Cryptography, Forensics, OSINT, Web Exploitation</strong>, and more. [cite_start]Find the "flags" to score points[cite: 83].</p>
               </div>
             </div>
           </div>
@@ -457,20 +495,28 @@
             <span>Event Schedule</span>
             <div class="p-controls"><div class="dot"></div><div class="dot"></div></div>
           </div>
-          <div class="p-body" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 200px;">
-            <h3 style="color: var(--hud-teal); margin-bottom: 0.5rem; text-transform: uppercase;">Coming Soon</h3>
-            <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 80%;">
-              The official timeline for the day is currently being <strong>finalised</strong>. 
-              <br><br>
-              Expect a full day packed with coding, workshops, and <strong>food</strong>.
-            </p>
+          <div class="p-body">
+            <div class="schedule-list">
+              <div class="schedule-item"><div class="time-badge">09:30</div><div class="event-name">Registration</div><div class="event-loc">HA4/04</div></div>
+              <div class="schedule-item"><div class="time-badge">10:00</div><div class="event-name">Opening Ceremony</div></div>
+              <div class="schedule-item"><div class="time-badge">10:30</div><div class="event-name">Team-Building</div></div>
+              <div class="schedule-item"><div class="time-badge">11:00</div><div class="event-name" style="color: var(--hud-teal);">Hacking Begins 🚀</div></div>
+              <div class="schedule-item"><div class="time-badge">12:00</div><div class="event-name">Guest Talk: Sam Crich</div></div>
+              <div class="schedule-item"><div class="time-badge">13:00</div><div class="event-name">Lunch & Hacking</div></div>
+              <div class="schedule-item"><div class="time-badge">14:00</div><div class="event-name">Workshop: Data Protection</div><div class="event-loc">HA1/19</div></div>
+              <div class="schedule-item"><div class="time-badge">14:45</div><div class="event-name">Hacking Continues</div></div>
+              <div class="schedule-item"><div class="time-badge">16:15</div><div class="event-name">Final Sprint ⚡</div></div>
+              <div class="schedule-item"><div class="time-badge">16:45</div><div class="event-name">Judging & Kahoot</div></div>
+              <div class="schedule-item"><div class="time-badge" style="background:var(--hud-purple); color:white;">17:30</div><div class="event-name">Closing Ceremony</div></div>
+              <div class="schedule-item"><div class="time-badge">17:45</div><div class="event-name">Food & Networking</div></div>
+            </div>
           </div>
         </div>
 
         <div class="panel discord-panel reveal">
           <div class="p-head"><span>Community</span><div class="p-controls"><div class="dot" style="background:var(--hud-purple)"></div></div></div>
           <div class="p-body" style="text-align: center;">
-            <p style="color:var(--text-dim); margin-bottom:1.5rem; font-size:0.9rem;">Need a team? Have questions? Want CTF hints? Join our community server.</p>
+            [cite_start]<p style="color:var(--text-dim); margin-bottom:1.5rem; font-size:0.9rem;">Need a team? Have questions? Want CTF hints? Join our community server[cite: 7].</p>
             <a href="https://discord.gg/MpJk8bGSRV" class="discord-btn">>> JOIN DISCORD SERVER <<</a>
           </div>
         </div>
@@ -500,10 +546,44 @@
 
         <div class="panel reveal">
           <div class="p-head"><span>Prizes & Awards</span><div class="p-controls"><div class="dot"></div></div></div>
-          <div class="p-body" style="text-align: center; padding: 3rem 1rem;">
-            <div style="background: rgba(45, 212, 191, 0.1); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; border: 1px solid var(--hud-teal);"><span style="font-size: 1.5rem;">🏆</span></div>
-            <h3 style="color: var(--hud-white); margin: 0 0 0.5rem 0; text-transform: uppercase; font-size: 1.1rem;">To Be Announced</h3>
-            <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 300px; margin: 0 auto;">The official prize pool is currently being <strong>finalised</strong>. Check back soon for the full list of rewards.</p>
+          <div class="p-body">
+            <div class="prize-list">
+              <div class="prize-item">
+                <div class="prize-rank">🏆</div>
+                <div class="prize-desc">
+                  <div class="prize-title">1st Place</div>
+                  <div class="prize-name">Raspberry Pi 4 Starter Kit</div>
+                </div>
+              </div>
+              <div class="prize-item">
+                <div class="prize-rank">🥈</div>
+                <div class="prize-desc">
+                  <div class="prize-title">2nd Place</div>
+                  <div class="prize-name">UGREEN Uno 65W Charger + Bank</div>
+                </div>
+              </div>
+              <div class="prize-item">
+                <div class="prize-rank">🥉</div>
+                <div class="prize-desc">
+                  <div class="prize-title">3rd Place</div>
+                  <div class="prize-name">Microbit Kit</div>
+                </div>
+              </div>
+              <div class="prize-item" style="border-color: var(--hud-purple);">
+                <div class="prize-rank">🚩</div>
+                <div class="prize-desc">
+                  <div class="prize-title" style="color:var(--hud-purple);">CTF Winner</div>
+                  <div class="prize-name">Lockpick Kit + Microbit</div>
+                </div>
+              </div>
+              <div class="prize-item">
+                <div class="prize-rank">🎁</div>
+                <div class="prize-desc">
+                  <div class="prize-title">Mini Games</div>
+                  <div class="prize-name">Prizes</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -514,7 +594,7 @@
             <details class="faq-item"><summary>Can I start coding beforehand?</summary><div class="faq-ans">No. All project code must be created during the event timeframe. Brainstorming and wireframing beforehand is permitted.</div></details>
             <details class="faq-item"><summary>What equipment do I need?</summary><div class="faq-ans">Please bring your own laptop and charger. Power strips and Wi-Fi will be provided at the venue.</div></details>
             <details class="faq-item"><summary>What if I don't have a team?</summary><div class="faq-ans">Don't worry! We can help you find a team on our Discord server beforehand, or we will help you find teammates on the day of the event.</div></details>
-            <details class="faq-item"><summary>How do teams work?</summary><div class="faq-ans">Teams can consist of <strong>up to 4 people</strong>. You can also hack solo if you prefer the "lone wolf" approach.</div></details>
+            [cite_start]<details class="faq-item"><summary>How do teams work?</summary><div class="faq-ans">Teams can consist of <strong>up to 4 people</strong>[cite: 111]. You can also hack solo if you prefer the "lone wolf" approach.</div></details>
             <details class="faq-item"><summary>Can non-Huddersfield students attend?</summary><div class="faq-ans">No. This event is exclusive to students currently enrolled at the University of Huddersfield. You will need your student ID for entry.</div></details>
             <details class="faq-item"><summary>Is food provided?</summary><div class="faq-ans">Yes. Food and refreshments will be provided for all attendees. Specific details on the menu and timing will be confirmed closer to the date. We will accommodate dietary requirements where possible.</div></details>
           </div>
